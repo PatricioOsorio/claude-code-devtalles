@@ -25,5 +25,4 @@ Everything is in `game.js` (single script, `'use strict'`, global mutable state 
 ## Gotchas
 
 - Canvas size is hardcoded in `index.html` (`width`/`height` on `#board`); changing `COLS`, `ROWS` or `BLOCK` in `game.js` requires updating it to `COLS*BLOCK × ROWS*BLOCK`.
-- `endGame()` calls `cancelAnimationFrame(animId)`, but when it is reached from inside `loop` (gravity lock), `loop` then re-schedules itself, so the rAF loop keeps running after game over. Keydown-triggered locks (hard/soft drop) cancel correctly.
 - UI strings in `game.js` (`PAUSA`, `Puntuación`) are Spanish and shown to the player.

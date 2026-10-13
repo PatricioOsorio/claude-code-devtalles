@@ -260,7 +260,8 @@ function loop(ts) {
     }
   }
   draw();
-  animId = requestAnimationFrame(loop);
+  // endGame() can run inside this frame, where cancelAnimationFrame can't stop the next one
+  if (!gameOver) animId = requestAnimationFrame(loop);
 }
 
 function applyTheme(theme) {
