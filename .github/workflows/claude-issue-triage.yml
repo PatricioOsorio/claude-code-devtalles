@@ -37,7 +37,10 @@ jobs:
                (remove clearly wrong ones with --remove-label).
             5. Write the diagnosis to /tmp/diag.md, then post it, reusing the previous one if it exists:
                `gh issue comment ${{ github.event.issue.number }} --edit-last --create-if-none --body-file /tmp/diag.md`
-               Diagnosis format (Markdown):
+               The comment body MUST be GitHub Flavored Markdown: `##` headings per section,
+               fenced code blocks with a language tag, `file:line` and identifiers in inline code,
+               a `- [ ]` task list for the fix steps, and a table for the affected files.
+               Sections:
                - **Summary**: one line
                - **Type / severity**
                - **Likely root cause** with `file:line` references
