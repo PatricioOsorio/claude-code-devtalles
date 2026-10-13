@@ -18,6 +18,11 @@ const COLORS = [
   '#aed581', // Y - lime
   '#fff176', // single - light yellow
   '#a1887f', // hollow 3x3 - brown
+  '#ff7043', // bomba - deep orange
+  '#fff59d', // rayo - pale yellow
+  '#ce93d8', // tinte - lilac
+  '#bcaaa4', // gravedad - taupe
+  '#80deea', // congelar - ice
 ];
 
 const PIECES = [
@@ -34,11 +39,22 @@ const PIECES = [
   [[0,0,0,0],[10,10,10,10],[0,10,0,0],[0,0,0,0]], // Y (pentomino)
   [[11]],                                      // single (Tetris reward)
   [[12,12,12],[12,0,12],[12,12,12]],          // hollow 3x3 (challenge)
+  [[13]],                                      // bomba
+  [[14]],                                      // rayo
+  [[15]],                                      // tinte
+  [[16]],                                      // gravedad
+  [[17]],                                      // congelar
 ];
 
 const SINGLE = 11;
 const SPECIAL_PIECES = [8, 9, 10, 12];
 const SPECIAL_CHANCE = 0.1;
+
+const BOMB = 13, LIGHTNING = 14, TINT = 15, GRAVITY = 16, FREEZE = 17;
+const POWER_PIECES = [BOMB, LIGHTNING, TINT, GRAVITY, FREEZE];
+const POWER_ICONS = { [BOMB]: 'B', [LIGHTNING]: 'R', [TINT]: 'T', [GRAVITY]: 'G', [FREEZE]: 'C' };
+const POWER_EVERY = 5;
+const FREEZE_MS = 5000;
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
 
@@ -58,7 +74,7 @@ const themeBtn = document.getElementById('theme-btn');
 const THEME_KEY = 'tetris-theme';
 let gridColor, blockEdge;
 
-let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId, freezeLeft;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -160,15 +176,53 @@ function softDrop() {
   }
 }
 
-function lockPiece() {
-  merge();
-  spawn(clearLines() === 4);
+function applyPower({ type, x, y }) {
+  switch (type) {
+    case BOMB:
+      for (let r = Math.max(0, y - 1); r <= Math.min(ROWS - 1, y + 1); r++)
+        for (let c = Math.max(0, x - 1); c <= Math.min(COLS - 1, x + 1); c++)
+          board[r][c] = 0;
+      break;
+    case LIGHTNING:
+      board[y].fill(0);
+      for (let r = 0; r < ROWS; r++) board[r][x] = 0;
+      break;
+    case TINT: {
+      // floor below means nothing to tint
+      const color = y + 1 < ROWS ? board[y + 1][x] : 0;
+      if (color)
+        for (const row of board)
+          for (let c = 0; c < COLS; c++) if (row[c] === color) row[c] = 0;
+      break;
+    }
+    case GRAVITY:
+      for (let c = 0; c < COLS; c++) {
+        const col = board.map(row => row[c]).filter(v => v);
+        for (let r = ROWS - 1; r >= 0; r--) board[r][c] = col.pop() || 0;
+      }
+      break;
+    case FREEZE:
+      freezeLeft = FREEZE_MS;
+      break;
+  }
 }
 
-function spawn(reward) {
+function lockPiece() {
+  const linesBefore = lines;
+  if (POWER_PIECES.includes(current.type)) applyPower(current);
+  else merge();
+  const cleared = clearLines();
+  const powerDue = Math.floor(lines / POWER_EVERY) > Math.floor(linesBefore / POWER_EVERY);
+  // a Tetris reward wins over a power-up due on the same lock
+  if (cleared === 4) spawn(SINGLE);
+  else if (powerDue) spawn(POWER_PIECES[Math.floor(Math.random() * POWER_PIECES.length)]);
+  else spawn();
+}
+
+function spawn(rewardType) {
   current = next;
-  // single goes in the next slot so the previewed piece stays honest
-  next = reward ? makePiece(SINGLE) : randomPiece();
+  // rewards go in the next slot so the previewed piece stays honest
+  next = rewardType ? makePiece(rewardType) : randomPiece();
   if (collide(current.shape, current.x, current.y)) {
     endGame();
   }
@@ -193,6 +247,14 @@ function drawBlock(context, x, y, colorIndex, size, alpha) {
   // highlight
   context.fillStyle = 'rgba(255,255,255,0.12)';
   context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+  const icon = POWER_ICONS[colorIndex];
+  if (icon) {
+    context.fillStyle = '#000';
+    context.font = `bold ${size * 0.6}px monospace`;
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(icon, x * size + size / 2, y * size + size / 2 + 1);
+  }
   context.globalAlpha = 1;
 }
 
@@ -271,7 +333,9 @@ function togglePause() {
 function loop(ts) {
   const dt = ts - lastTime;
   lastTime = ts;
-  dropAccum += dt;
+  // counting down by dt (not wall clock) keeps the freeze honest across pauses
+  if (freezeLeft > 0) freezeLeft -= dt;
+  else dropAccum += dt;
   if (dropAccum >= dropInterval) {
     dropAccum = 0;
     if (!collide(current.shape, current.x, current.y + 1)) {
@@ -319,6 +383,7 @@ function init() {
   gameOver = false;
   dropInterval = 1000;
   dropAccum = 0;
+  freezeLeft = 0;
   lastTime = performance.now();
   next = randomPiece();
   spawn();
