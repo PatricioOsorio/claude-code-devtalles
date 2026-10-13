@@ -25,6 +25,75 @@ const COLORS = [
   '#80deea', // congelar - ice
 ];
 
+function retroDraw(context, px, py, size, color) {
+  context.fillStyle = color;
+  context.fillRect(px + 1, py + 1, size - 2, size - 2);
+  context.strokeStyle = blockEdge;
+  context.lineWidth = 1;
+  context.strokeRect(px + 1.5, py + 1.5, size - 3, size - 3);
+  context.fillStyle = 'rgba(255,255,255,0.12)';
+  context.fillRect(px + 1, py + 1, size - 2, 4);
+}
+
+// Each skin swaps both the palette (same 1-17 indexing as COLORS) and the block renderer.
+const SKINS = {
+  retro: { colors: COLORS, draw: retroDraw },
+  neon: {
+    colors: [
+      null, '#00ffff', '#ffff00', '#ff00ff', '#39ff14', '#ff073a', '#4d4dff', '#ff9100', '#ff1493',
+      '#00ffa2', '#b6ff00', '#fff700', '#c08a5a', '#ff5e00', '#faff72', '#d38bff', '#e0c3b8', '#7df9ff',
+    ],
+    draw(context, px, py, size, color) {
+      // save/restore keeps glow and alpha changes from leaking into the icon text or later draws
+      context.save();
+      context.shadowColor = color;
+      context.shadowBlur = 12;
+      context.strokeStyle = color;
+      context.lineWidth = 2;
+      context.strokeRect(px + 3, py + 3, size - 6, size - 6);
+      context.fillStyle = color;
+      context.globalAlpha *= 0.35;
+      context.fillRect(px + 3, py + 3, size - 6, size - 6);
+      context.restore();
+    },
+  },
+  pastel: {
+    colors: [
+      null, '#b5ead7', '#fff1ba', '#d7bde2', '#c7f0c2', '#ffb7b2', '#bde0fe', '#ffd6a5', '#ffc8dd',
+      '#a8e6cf', '#e2f0cb', '#fdffb6', '#e6ccb2', '#ffab91', '#fffacd', '#e0bbff', '#ddd0c8', '#caf0f8',
+    ],
+    draw(context, px, py, size, color) {
+      context.fillStyle = color;
+      context.beginPath();
+      context.roundRect(px + 2, py + 2, size - 4, size - 4, size * 0.3);
+      context.fill();
+      context.fillStyle = 'rgba(255,255,255,0.35)';
+      context.beginPath();
+      context.roundRect(px + 5, py + 5, size - 10, size * 0.25, size * 0.1);
+      context.fill();
+    },
+  },
+  pixel: {
+    colors: COLORS,
+    draw(context, px, py, size, color) {
+      context.fillStyle = color;
+      context.fillRect(px, py, size, size);
+      // 3px checker dither
+      const t = 3;
+      context.fillStyle = 'rgba(255,255,255,0.22)';
+      for (let i = 0; i < size / t; i++) {
+        for (let j = 0; j < size / t; j++) {
+          if ((i + j) % 2) continue;
+          context.fillRect(px + i * t, py + j * t, Math.min(t, size - i * t), Math.min(t, size - j * t));
+        }
+      }
+      context.fillStyle = 'rgba(0,0,0,0.45)';
+      context.fillRect(px, py + size - t, size, t);
+      context.fillRect(px + size - t, py, t, size);
+    },
+  },
+};
+
 const PIECES = [
   null,
   [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]], // I
@@ -70,11 +139,13 @@ const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 const themeBtn = document.getElementById('theme-btn');
+const skinSelect = document.getElementById('skin-select');
 
 const THEME_KEY = 'tetris-theme';
+const SKIN_KEY = 'tetris-skin';
 let gridColor, blockEdge;
 
-let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId, freezeLeft;
+let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId, freezeLeft, skin = SKINS.retro;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -237,16 +308,8 @@ function updateHUD() {
 
 function drawBlock(context, x, y, colorIndex, size, alpha) {
   if (!colorIndex) return;
-  const color = COLORS[colorIndex];
   context.globalAlpha = alpha ?? 1;
-  context.fillStyle = color;
-  context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
-  context.strokeStyle = blockEdge;
-  context.lineWidth = 1;
-  context.strokeRect(x * size + 1.5, y * size + 1.5, size - 3, size - 3);
-  // highlight
-  context.fillStyle = 'rgba(255,255,255,0.12)';
-  context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+  skin.draw(context, x * size, y * size, size, skin.colors[colorIndex]);
   const icon = POWER_ICONS[colorIndex];
   if (icon) {
     context.fillStyle = '#000';
@@ -374,6 +437,22 @@ function toggleTheme() {
   applyTheme(theme);
 }
 
+function applySkin(name) {
+  skin = SKINS[name];
+  document.documentElement.dataset.skin = name;
+  skinSelect.value = name;
+  if (current) {
+    draw();
+    drawNext();
+  }
+}
+
+function loadSkin() {
+  let saved = null;
+  try { saved = localStorage.getItem(SKIN_KEY); } catch (e) { /* storage unavailable */ }
+  return Object.hasOwn(SKINS, saved) ? saved : 'retro';
+}
+
 function init() {
   board = createBoard();
   score = 0;
@@ -394,6 +473,7 @@ function init() {
 }
 
 document.addEventListener('keydown', e => {
+  if (e.target === skinSelect) return; // let the select own its keys while focused
   if (e.code === 'KeyP') { togglePause(); return; }
   if (paused || gameOver) return;
   switch (e.code) {
@@ -424,6 +504,13 @@ themeBtn.addEventListener('click', () => {
   themeBtn.blur(); // keep Space/arrows from re-activating the button mid-game
 });
 
+skinSelect.addEventListener('change', () => {
+  try { localStorage.setItem(SKIN_KEY, skinSelect.value); } catch (e) { /* storage unavailable */ }
+  applySkin(skinSelect.value);
+  skinSelect.blur(); // keep Space/arrows from changing the skin mid-game
+});
+
 applyTheme(loadTheme());
+applySkin(loadSkin());
 
 init();
