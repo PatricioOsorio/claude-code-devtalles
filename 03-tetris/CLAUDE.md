@@ -14,8 +14,8 @@ Run: open `index.html` directly, or serve the folder (`python3 -m http.server 80
 
 Everything is in `game.js` (single script, `'use strict'`, global mutable state declared in one `let` line). `index.html` only supplies the DOM ids that `game.js` looks up at load time (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, `theme-btn`); renaming one breaks the script.
 
-- **Board**: `ROWS × COLS` matrix; `0` = empty, `1–7` = color/piece index. `COLORS` and `PIECES` are indexed by the same 1–7 value, with `null` at index 0.
-- **Pieces**: `randomPiece()` deep-copies a `PIECES` matrix. Rotation is `rotateCW` (transpose + reverse), applied via `tryRotate` with horizontal kicks `[0, -1, 1, -2, 2]` only.
+- **Board**: `ROWS × COLS` matrix; `0` = empty, `1–12` = color/piece index. `COLORS` and `PIECES` are indexed by the same 1–12 value, with `null` at index 0. 1–7 are the standard tetrominoes; 8–10 pentominoes (+, U, Y), 11 single, 12 hollow 3×3.
+- **Pieces**: `randomPiece()` picks a standard piece, or a `SPECIAL_PIECES` entry with `SPECIAL_CHANCE`; `makePiece(type)` deep-copies a `PIECES` matrix. A 4-line clear makes `spawn(true)` queue `SINGLE` as `next`. Shapes must fit the 4×4 preview canvas. Rotation is `rotateCW` (transpose + reverse), applied via `tryRotate` with horizontal kicks `[0, -1, 1, -2, 2]` only.
 - **Loop**: `loop(ts)` is `requestAnimationFrame`-driven; accumulates `dropAccum` and gravity-drops when it exceeds `dropInterval`. Input is handled separately in the `keydown` listener and mutates `current` directly; there is no input queue.
 - **Piece lifecycle**: `lockPiece()` → `merge()` → `clearLines()` (updates `lines`, `score`, `level`, `dropInterval`) → `spawn()`. `spawn()` promotes `next` to `current` and calls `endGame()` if the new piece collides immediately.
 - **Scoring/speed**: `LINE_SCORES[cleared] * level`; hard drop +2/cell, soft drop +1/row; `level = floor(lines/10) + 1`; `dropInterval = max(100, 1000 - (level-1)*90)`. The initial `1000` is duplicated in `init()` and `clearLines()`.

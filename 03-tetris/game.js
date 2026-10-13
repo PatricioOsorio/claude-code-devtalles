@@ -13,6 +13,11 @@ const COLORS = [
   '#e57373', // Z - red
   '#90caf9', // J - pale blue
   '#ffb74d', // L - orange
+  '#f06292', // + - pink
+  '#4db6ac', // U - teal
+  '#aed581', // Y - lime
+  '#fff176', // single - light yellow
+  '#a1887f', // hollow 3x3 - brown
 ];
 
 const PIECES = [
@@ -24,7 +29,16 @@ const PIECES = [
   [[5,5,0],[0,5,5],[0,0,0]],                  // Z
   [[6,0,0],[6,6,6],[0,0,0]],                  // J
   [[0,0,7],[7,7,7],[0,0,0]],                  // L
+  [[0,8,0],[8,8,8],[0,8,0]],                  // + (pentomino)
+  [[9,0,9],[9,9,9],[0,0,0]],                  // U (pentomino)
+  [[0,0,0,0],[10,10,10,10],[0,10,0,0],[0,0,0,0]], // Y (pentomino)
+  [[11]],                                      // single (Tetris reward)
+  [[12,12,12],[12,0,12],[12,12,12]],          // hollow 3x3 (challenge)
 ];
+
+const SINGLE = 11;
+const SPECIAL_PIECES = [8, 9, 10, 12];
+const SPECIAL_CHANCE = 0.1;
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
 
@@ -51,7 +65,13 @@ function createBoard() {
 }
 
 function randomPiece() {
-  const type = Math.floor(Math.random() * 7) + 1;
+  if (Math.random() < SPECIAL_CHANCE) {
+    return makePiece(SPECIAL_PIECES[Math.floor(Math.random() * SPECIAL_PIECES.length)]);
+  }
+  return makePiece(Math.floor(Math.random() * 7) + 1);
+}
+
+function makePiece(type) {
   const shape = PIECES[type].map(row => [...row]);
   return { type, shape, x: Math.floor(COLS / 2) - Math.floor(shape[0].length / 2), y: 0 };
 }
@@ -114,6 +134,7 @@ function clearLines() {
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
     updateHUD();
   }
+  return cleared;
 }
 
 function ghostY() {
@@ -141,13 +162,13 @@ function softDrop() {
 
 function lockPiece() {
   merge();
-  clearLines();
-  spawn();
+  spawn(clearLines() === 4);
 }
 
-function spawn() {
+function spawn(reward) {
   current = next;
-  next = randomPiece();
+  // single goes in the next slot so the previewed piece stays honest
+  next = reward ? makePiece(SINGLE) : randomPiece();
   if (collide(current.shape, current.x, current.y)) {
     endGame();
   }
