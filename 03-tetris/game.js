@@ -328,6 +328,7 @@ function togglePause() {
   if (!paused) {
     lastTime = performance.now();
     dropAccum = 0;
+    cancelAnimationFrame(animId);
     loop(lastTime);
   } else {
     cancelAnimationFrame(animId);
@@ -401,7 +402,10 @@ function init() {
 }
 
 document.addEventListener('keydown', e => {
-  if (e.code === 'KeyP' || e.code === 'Escape') { togglePause(); return; }
+  if (e.code === 'KeyP' || e.code === 'Escape') {
+    if (!e.repeat) togglePause();
+    return;
+  }
   if (paused || gameOver) return;
   switch (e.code) {
     case 'ArrowLeft':
@@ -442,5 +446,7 @@ themeBtn.addEventListener('click', () => {
 });
 
 applyTheme(loadTheme());
+// browsers may restore the select's previous value on reload
+startLevel = Number(startLevelSelect.value);
 
 init();
