@@ -12,7 +12,7 @@ Run: open `index.html` directly, or serve the folder (`python3 -m http.server 80
 
 ## Architecture
 
-Everything is in `game.js` (single script, `'use strict'`, global mutable state declared in one `let` line). `index.html` only supplies the DOM ids that `game.js` looks up at load time (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, `theme-btn`); renaming one breaks the script.
+Everything is in `game.js` (single script, `'use strict'`, global mutable state declared in one `let` line). `index.html` only supplies the DOM ids that `game.js` looks up at load time (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, `theme-btn`, `pause-menu`, `resume-btn`, `pause-restart-btn`, `controls-btn`, `pause-controls`, `start-level`); renaming one breaks the script.
 
 - **Board**: `ROWS × COLS` matrix; `0` = empty, `1–17` = color/piece index. `COLORS` and `PIECES` are indexed by the same 1–17 value, with `null` at index 0. 1–7 are the standard tetrominoes; 8–10 pentominoes (+, U, Y), 11 single, 12 hollow 3×3, 13–17 power-ups (bomba, rayo, tinte, gravedad, congelar).
 - **Power-ups**: every `POWER_EVERY` lines, `lockPiece()` queues a random 1×1 power-up as `next` (a Tetris `SINGLE` wins on the same lock). A power-up is never `merge()`d; `applyPower()` runs its effect at the landing cell, then `clearLines()` runs. Congelar sets `freezeLeft`, which `loop` counts down by `dt` instead of accumulating `dropAccum`.
