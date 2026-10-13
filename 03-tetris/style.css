@@ -40,6 +40,20 @@
   --block-edge: rgba(0, 0, 0, 0.35);
 }
 
+#skin-select {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: 14px;
+}
+
+[data-skin="neon"] #board,
+[data-skin="neon"] #next-canvas {
+  background: #000;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;

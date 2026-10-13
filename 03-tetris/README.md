@@ -142,6 +142,10 @@ Cuando una pieza recién generada ya colisiona al aparecer (`spawn`), se dispara
 
 ---
 
+## Skins
+
+El selector **SKIN** del panel cambia el aspecto sin recargar: Retro (bloques planos), Neón (fondo negro con brillo), Pastel (colores suaves y bordes redondeados) y Pixel art (textura de tablero de ajedrez). La preferencia se guarda en `localStorage` (`tetris-skin`) y es independiente del tema claro/oscuro.
+
 ## Tecnologías
 
 - **HTML5** — marcado y dos elementos `<canvas>` (tablero y vista previa).
