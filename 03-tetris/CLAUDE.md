@@ -12,7 +12,7 @@ Run: open `index.html` directly, or serve the folder (`python3 -m http.server 80
 
 ## Architecture
 
-Everything is in `game.js` (single script, `'use strict'`, global mutable state declared in one `let` line). `index.html` only supplies the DOM ids that `game.js` looks up at load time (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, `theme-btn`); renaming one breaks the script.
+Everything is in `game.js` (single script, `'use strict'`, global mutable state declared in one `let` line). `index.html` only supplies the DOM ids that `game.js` looks up at load time (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, `theme-btn`, `start-screen`, `play-btn`, `start-records`, `start-stats`, `over-records`, `over-stats`, `name-form`, `name-input`, `reset-btn`); renaming one breaks the script.
 
 - **Board**: `ROWS × COLS` matrix; `0` = empty, `1–17` = color/piece index. `COLORS` and `PIECES` are indexed by the same 1–17 value, with `null` at index 0. 1–7 are the standard tetrominoes; 8–10 pentominoes (+, U, Y), 11 single, 12 hollow 3×3, 13–17 power-ups (bomba, rayo, tinte, gravedad, congelar).
 - **Power-ups**: every `POWER_EVERY` lines, `lockPiece()` queues a random 1×1 power-up as `next` (a Tetris `SINGLE` wins on the same lock). A power-up is never `merge()`d; `applyPower()` runs its effect at the landing cell, then `clearLines()` runs. Congelar sets `freezeLeft`, which `loop` counts down by `dt` instead of accumulating `dropAccum`.
@@ -22,6 +22,8 @@ Everything is in `game.js` (single script, `'use strict'`, global mutable state 
 - **Scoring/speed**: `LINE_SCORES[cleared] * level`; hard drop +2/cell, soft drop +1/row; `level = floor(lines/10) + 1`; `dropInterval = max(100, 1000 - (level-1)*90)`. The initial `1000` is duplicated in `init()` and `clearLines()`.
 
 - **Theming**: colors live in CSS variables (`:root` = dark default, `[data-theme="light"]`). `applyTheme()` sets `data-theme` on `<html>` and caches `--grid` / `--block-edge` into `gridColor` / `blockEdge` for canvas drawing; the choice is persisted in `localStorage` under `tetris-theme`. Add new colors as variables in both blocks.
+
+- **Records**: `localStorage` key `tetris-records` = `{ top: [{name, score, lines, combo}] (max 5, desc), bestCombo, maxLines }`. The game no longer auto-starts: `#start-screen` shows the table and `init()` runs on Jugar. `lockPiece()` tracks `combo` (consecutive locks clearing >=1 line) and `maxCombo`. `endGame()` always updates `bestCombo`/`maxLines`, and shows `#name-form` only if the score qualifies; `submitName()` inserts the entry and highlights it. Names are rendered with `textContent`. The `keydown` handler ignores events before the first game and while typing in `#name-input`.
 
 ## Gotchas
 

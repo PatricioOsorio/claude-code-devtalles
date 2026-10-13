@@ -18,6 +18,7 @@
   --overlay-bg: rgba(10, 10, 20, 0.75);
   --shadow: rgba(0, 0, 0, 0.6);
   --block-edge: rgba(0, 0, 0, 0);
+  --record-hl: rgba(255, 213, 79, 0.25);
 }
 
 [data-theme="light"] {
@@ -38,6 +39,7 @@
   --overlay-bg: rgba(245, 245, 250, 0.75);
   --shadow: rgba(0, 0, 0, 0.15);
   --block-edge: rgba(0, 0, 0, 0.35);
+  --record-hl: rgba(255, 179, 0, 0.3);
 }
 
 *, *::before, *::after {
@@ -216,4 +218,81 @@ kbd {
 
 #restart-btn:hover {
   background: var(--accent-hover);
+}
+
+/* ---- Records ---- */
+.start-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--accent);
+}
+
+.records {
+  list-style: none;
+  width: 220px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+}
+
+.records li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.records li.highlight {
+  background: var(--record-hl);
+  font-weight: bold;
+}
+
+.records .rec-name {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.record-stats {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.name-form {
+  display: flex;
+  gap: 6px;
+}
+
+.name-form.hidden {
+  display: none;
+}
+
+.name-form input {
+  width: 130px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--board-bg);
+  color: var(--text);
+}
+
+#play-btn, #save-btn {
+  background: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
 }
