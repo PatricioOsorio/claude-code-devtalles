@@ -1,0 +1,47 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "claude: pause-menu",
+      "type": "shell",
+      "command": "claude -n pause-menu \"$(cat ${workspaceFolder}/.trees/pause-menu.task.md)\"",
+      "options": {
+        "cwd": "${workspaceFolder}/.trees/pause-menu"
+      },
+      "isBackground": true,
+      "presentation": {
+        "panel": "dedicated",
+        "group": "claude"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "claude: local-high-scores",
+      "type": "shell",
+      "command": "claude -n local-high-scores \"$(cat ${workspaceFolder}/.trees/local-high-scores.task.md)\"",
+      "options": {
+        "cwd": "${workspaceFolder}/.trees/local-high-scores"
+      },
+      "isBackground": true,
+      "presentation": {
+        "panel": "dedicated",
+        "group": "claude"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "claude: visual-themes",
+      "type": "shell",
+      "command": "claude -n visual-themes \"$(cat ${workspaceFolder}/.trees/visual-themes.task.md)\"",
+      "options": {
+        "cwd": "${workspaceFolder}/.trees/visual-themes"
+      },
+      "isBackground": true,
+      "presentation": {
+        "panel": "dedicated",
+        "group": "claude"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
