@@ -14,7 +14,7 @@ export function bounceOffWalls(ball) {
   }
 }
 
-// Bounce angle grows with distance from paddle center; speed stays constant.
+// Bounce angle grows with distance from paddle center; speed stays constant. Returns true on hit.
 export function bounceOffPaddle(ball, paddle) {
   const hits =
     ball.vy > 0 &&
@@ -22,7 +22,7 @@ export function bounceOffPaddle(ball, paddle) {
     ball.x - ball.r <= paddle.x + paddle.w &&
     ball.y + ball.r >= paddle.y &&
     ball.y - ball.r <= paddle.y + paddle.h;
-  if (!hits) return;
+  if (!hits) return false;
 
   const offset = (ball.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2);
   const angle = Math.max(-1, Math.min(1, offset)) * PADDLE.maxBounceAngle;
@@ -30,6 +30,7 @@ export function bounceOffPaddle(ball, paddle) {
   ball.vx = speed * Math.sin(angle);
   ball.vy = -speed * Math.cos(angle);
   ball.y = paddle.y - ball.r;
+  return true;
 }
 
 // Reflects on the axis with the smaller penetration. Returns the hit brick, if any.

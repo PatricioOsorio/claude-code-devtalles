@@ -2,6 +2,7 @@ import { W, H, PADDLE, BALL, BRICK, COLORS, LIVES } from './src/config.js';
 import { createInput } from './src/input.js';
 import { bounceOffWalls, bounceOffPaddle, bounceOffBricks } from './src/physics.js';
 import { loadHighScore, saveHighScore } from './src/storage.js';
+import { createFx, updateFx, trackBall, emit } from './src/fx.js';
 import { render } from './src/renderer.js';
 import { loadSpritesheet } from './assets/spritesheet.js';
 
@@ -40,12 +41,14 @@ function createState(highScore) {
 }
 
 let state = createState(loadHighScore());
+const fx = createFx();
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
 function loseLife() {
+  emit(fx, 'lifeLost');
   state.lives--;
   state.ball.vx = 0;
   state.ball.vy = 0;
@@ -53,6 +56,8 @@ function loseLife() {
 }
 
 function update() {
+  updateFx(fx);
+  trackBall(fx, state.ball, state.phase === 'playing');
   const { paddle } = state;
   const mouseX = input.takeMouseX();
   if (mouseX !== null) paddle.x = mouseX - paddle.w / 2;
@@ -79,11 +84,16 @@ function update() {
   ball.x += ball.vx;
   ball.y += ball.vy;
   bounceOffWalls(ball);
-  bounceOffPaddle(ball, paddle);
+  if (bounceOffPaddle(ball, paddle)) emit(fx, 'paddleHit');
 
   const hit = bounceOffBricks(ball, state.bricks);
   if (hit) {
     hit.alive = false;
+    emit(fx, 'brickBroken', {
+      x: hit.x + BRICK.w / 2,
+      y: hit.y + BRICK.h / 2,
+      color: hit.color,
+    });
     state.score += BRICK.points;
     if (state.score > state.highScore) {
       state.highScore = state.score;
@@ -100,7 +110,7 @@ function update() {
 
 function frame() {
   update();
-  render(ctx, state);
+  render(ctx, state, fx);
   requestAnimationFrame(frame);
 }
 

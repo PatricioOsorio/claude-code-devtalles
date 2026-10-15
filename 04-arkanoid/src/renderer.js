@@ -1,22 +1,97 @@
-import { W, H, HUD_H, BRICK } from './config.js';
+import { W, H, HUD_H, BRICK, FX, FX_COLORS } from './config.js';
+import { applyBloom } from './bloom.js';
+import { drawBackground } from './background.js';
 import { drawSprite } from '../assets/spritesheet.js';
 
 const FONT = 'system-ui, -apple-system, "Segoe UI", sans-serif';
 const MAX_LIFE_ICONS = 5;
 
-export function render(ctx, state) {
+// Pre-rendered once: a radial gradient per frame per sprite would be wasteful.
+const glow = createGlow(FX_COLORS.cyan);
+const vignette = createVignette();
+
+function createVignette() {
+  const c = document.createElement('canvas');
+  c.width = W;
+  c.height = H;
+  const g = c.getContext('2d');
+  const grad = g.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 0.75);
+  grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+  grad.addColorStop(1, 'rgba(0, 0, 0, 0.6)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, W, H);
+  return c;
+}
+
+function createGlow(color) {
+  const size = 64;
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const g = c.getContext('2d');
+  const grad = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  grad.addColorStop(0, color);
+  grad.addColorStop(1, 'transparent');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, size, size);
+  return c;
+}
+
+export function render(ctx, state, fx) {
   const { paddle, ball, bricks } = state;
-  ctx.clearRect(0, 0, W, H);
+  drawBackground(ctx, state.phase === 'playing' && !fx.reducedMotion);
+  ctx.save();
+  ctx.translate((Math.random() * 2 - 1) * fx.shake, (Math.random() * 2 - 1) * fx.shake);
   for (const brick of bricks) {
     if (brick.alive) drawSprite(ctx, `block_${brick.color}`, brick.x, brick.y, BRICK.w, BRICK.h);
   }
+  drawGlow(ctx, paddle.x - 16, paddle.y - 14, paddle.w + 32, paddle.h + 28, 0.5);
+  drawGlow(ctx, ball.x - ball.r * 4, ball.y - ball.r * 4, ball.r * 8, ball.r * 8, 0.7);
+  drawTrail(ctx, fx, ball.r);
   drawSprite(ctx, 'paddle', paddle.x, paddle.y, paddle.w, paddle.h);
   drawSprite(ctx, 'ball', ball.x - ball.r, ball.y - ball.r, ball.r * 2, ball.r * 2);
+  drawParticles(ctx, fx);
+  ctx.restore();
+
+  ctx.fillStyle = `rgba(255, 255, 255, ${fx.flash})`;
+  ctx.fillRect(0, 0, W, H);
+
+  applyBloom(ctx);
+  ctx.drawImage(vignette, 0, 0);
 
   drawHud(ctx, state);
 
   if (state.phase === 'won') drawEndScreen(ctx, state, 'YOU WIN', '#4ade80');
   if (state.phase === 'over') drawEndScreen(ctx, state, 'GAME OVER', '#f87171');
+}
+
+function drawGlow(ctx, x, y, w, h, alpha) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalAlpha = alpha;
+  ctx.drawImage(glow, x, y, w, h);
+  ctx.restore();
+}
+
+function drawTrail(ctx, { trail }, r) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  trail.forEach((p, i) => {
+    const t = (i + 1) / FX.trailLength;
+    ctx.globalAlpha = t * 0.5;
+    ctx.drawImage(glow, p.x - r * 2 * t, p.y - r * 2 * t, r * 4 * t, r * 4 * t);
+  });
+  ctx.restore();
+}
+
+function drawParticles(ctx, { particles }) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (const p of particles) {
+    ctx.globalAlpha = p.life / p.maxLife;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+  }
+  ctx.restore();
 }
 
 function drawHud(ctx, { score, highScore, lives }) {

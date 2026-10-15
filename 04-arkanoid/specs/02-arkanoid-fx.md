@@ -1,6 +1,6 @@
 # SPEC 02 — Arkanoid neon FX
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** SPEC 01
 > **Date:** 2026-10-15
 > **Objective:** Give the game a neon/synthwave look with canvas 2D effects (particles, ball trail, additive glow, parallax background, screen shake, bloom pass and vignette) that respect `prefers-reduced-motion`.
@@ -10,7 +10,7 @@
 **In:**
 
 - `src/fx.js`: effects state (particles, ball trail, shake, flash) and its per-frame update; no drawing.
-- `src/background.js`: static-cost background layer (drifting starfield + perspective grid) drawn behind the bricks.
+- `src/background.js`: static-cost background layer (pre-rendered nebula, drifting starfield and perspective grid) drawn behind the bricks.
 - `src/bloom.js`: bloom pass using an offscreen canvas (downscale, upscale, composite with `lighter`).
 - Particle burst in the brick color when a brick is destroyed.
 - Ball trail and additive glow on ball and paddle.
@@ -73,7 +73,7 @@ Conventions:
 2. Emit `brickBroken` from `game.js`; spawn the particle burst in `fx.js` and draw particles with `lighter` in `renderer.js`. Manual test: breaking a brick shows colored particles that fade.
 3. Record ball positions into `fx.trail`; draw the trail and a pre-rendered radial-gradient glow under the ball and paddle. Manual test: ball leaves a fading trail; ball and paddle glow.
 4. Add shake (brick break, life lost) and paddle-hit flash: `render` wraps the game layer in `ctx.translate` with the current shake and draws the flash overlay. Manual test: losing a life shakes the canvas; paddle hit flashes briefly.
-5. Create `src/background.js` (starfield with two parallax speeds + perspective grid) and draw it first in `render`. Manual test: stars drift, grid is visible behind bricks.
+5. Create `src/background.js` (nebula, starfield with two parallax speeds and perspective grid) and draw it first in `render`. Manual test: stars drift, grid is visible behind bricks.
 6. Create `src/bloom.js`; render the game layer to an offscreen canvas, downscale by `FX.bloomScale`, composite back with `lighter` at `FX.bloomStrength`, then draw HUD and end screens on top. Manual test: bright elements bleed light; HUD text stays sharp.
 7. Add vignette and `prefers-reduced-motion` handling (`matchMedia` read at start plus `change` listener): no shake/flash/trail, burst count `/3`, background frozen. Manual test: toggle the OS setting or DevTools rendering emulation, effects reduce without reloading.
 
@@ -84,7 +84,7 @@ Conventions:
 - [ ] The ball leaves a trail of `FX.trailLength` positions that fades while the ball moves, and the trail is empty while the ball is attached to the paddle.
 - [ ] Losing a life shakes the canvas and the shake decays to 0 within 500 ms.
 - [ ] A paddle hit flashes the screen with alpha never above `FX.flashPaddle`.
-- [ ] The background has stars and a grid, and they move while the phase is `playing`.
+- [ ] The background has nebula, stars and a grid, and they move while the phase is `playing`.
 - [ ] HUD text and end-screen text are not blurred by the bloom pass.
 - [ ] With `prefers-reduced-motion: reduce` there is no shake, no flash, no trail, and the background is static; gameplay is unchanged.
 - [ ] Score, lives, high score, win and game over behave as in SPEC 01.
