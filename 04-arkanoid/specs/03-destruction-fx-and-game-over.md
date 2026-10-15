@@ -1,6 +1,6 @@
 # SPEC 03 — Destruction FX, ball loss and Game Over
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** SPEC 01, SPEC 02
 > **Date:** 2026-10-15
 > **Objective:** Replace the plain brick burst, the instant life loss and the static Game Over panel with neon shatter shards, a ball-loss explosion with a short pause, and an animated Game Over screen, all using depth layers (far/near parallax and drop shadows).

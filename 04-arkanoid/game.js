@@ -1,4 +1,4 @@
-import { W, H, PADDLE, BALL, BRICK, COLORS, LIVES } from './src/config.js';
+import { W, H, PADDLE, BALL, BRICK, COLORS, LIVES, FX } from './src/config.js';
 import { createInput } from './src/input.js';
 import { bounceOffWalls, bounceOffPaddle, bounceOffBricks } from './src/physics.js';
 import { loadHighScore, saveHighScore } from './src/storage.js';
@@ -31,6 +31,7 @@ function createBricks() {
 function createState(highScore) {
   return {
     phase: 'ready',
+    lostTimer: 0,
     score: 0,
     lives: LIVES,
     highScore,
@@ -49,15 +50,18 @@ function clamp(value, min, max) {
 
 function loseLife() {
   emit(fx, 'lifeLost');
+  emit(fx, 'ballLost', { x: state.ball.x, y: H });
   state.lives--;
   state.ball.vx = 0;
   state.ball.vy = 0;
-  state.phase = state.lives === 0 ? 'over' : 'ready';
+  state.phase = 'lost';
+  state.lostTimer = FX.lostFrames;
 }
 
 function update() {
   updateFx(fx);
   trackBall(fx, state.ball, state.phase === 'playing');
+  fx.overT = state.phase === 'over' ? fx.overT + 1 : 0;
   const { paddle } = state;
   const mouseX = input.takeMouseX();
   if (mouseX !== null) paddle.x = mouseX - paddle.w / 2;
@@ -67,7 +71,14 @@ function update() {
   const { ball } = state;
   const launch = input.takeLaunch();
   if (state.phase === 'over' || state.phase === 'won') {
-    if (launch) state = createState(state.highScore);
+    // The Game Over entrance cannot be skipped by mashing Space.
+    const entered = state.phase === 'won' || fx.reducedMotion || fx.overT >= FX.overEnterFrames;
+    if (launch && entered) state = createState(state.highScore);
+    return;
+  }
+  if (state.phase === 'lost') {
+    // Launch input is consumed above and dropped here: no launch during the pause.
+    if (--state.lostTimer === 0) state.phase = state.lives === 0 ? 'over' : 'ready';
     return;
   }
   if (state.phase === 'ready') {

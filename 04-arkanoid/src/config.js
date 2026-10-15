@@ -28,4 +28,16 @@ export const FX = {
   flashPaddle: 0.12, // max alpha, kept low on purpose
   bloomScale: 0.25, // offscreen size relative to the canvas
   bloomStrength: 0.8,
+  shardCount: 6, // per brick; /2 with reduced motion
+  shardGravity: 0.18, // px/frame^2
+  ringLife: 18, // frames
+  ringMaxR: 40, // px
+  farScale: 0.6, // size and speed multiplier of the far layer
+  farAlpha: 0.5,
+  shadowAlpha: 0.35,
+  shadowOffset: 4, // px, straight down
+  lostFrames: 36, // ~600 ms pause after the ball falls
+  lostFlash: 0.18, // max alpha of the red edge flash, kept low on purpose
+  overEnterFrames: 30, // title scale/fade-in; restart ignored until done
+  overCountFrames: 60, // score count-up duration
 };
