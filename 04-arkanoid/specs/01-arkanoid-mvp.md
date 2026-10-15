@@ -9,7 +9,8 @@
 
 **In:**
 
-- `index.html` at project root, loading `assets/spritesheet.js` then `game.js`.
+- `index.html` at project root (structure only, BEM classes), `style.css` (BEM), loading `game.js` as `<script type="module">`; `game.js` imports `src/*.js` and `assets/spritesheet.js` as ES modules.
+- One responsibility per file: `src/config.js` (constants), `src/input.js` (keyboard/mouse), `src/physics.js` (collisions), `src/renderer.js` (canvas drawing + HUD), `src/storage.js` (high score), `game.js` (state, loop, coordination).
 - Canvas 480x640 with paddle, ball, 6x10 brick grid (one color per row).
 - Paddle control with keyboard (ArrowLeft/ArrowRight, A/D) and mouse (x position over canvas).
 - Ball launch with Space or click; ball attached to paddle until launched.
@@ -55,14 +56,14 @@ Conventions:
 
 ## Implementation plan
 
-1. Create `index.html` (canvas, script tags) and `game.js` that calls `loadSpritesheet` and draws the paddle and ball. Manual test: open via static server, see both sprites.
-2. Add game loop (`requestAnimationFrame`) and paddle movement with keyboard and mouse, clamped to canvas.
-3. Add ball in `ready` phase attached to paddle; launch on Space/click; wall and ceiling bounce.
+1. Create `index.html`, `style.css`, `src/config.js`, `src/renderer.js` and `game.js` that calls `loadSpritesheet` and draws the paddle and ball. Manual test: open via static server, see both sprites.
+2. Add game loop (`requestAnimationFrame`) and paddle movement with keyboard and mouse (`src/input.js`), clamped to canvas.
+3. Add ball in `ready` phase attached to paddle; launch on Space/click; wall and ceiling bounce (`src/physics.js`).
 4. Add paddle collision with angle based on hit offset.
 5. Build brick grid, draw it, add brick collision (destroy, +10 score, reflect ball).
 6. Add lives: ball below canvas → `lives--`, re-attach; `lives === 0` → `over`.
 7. Add win when no bricks alive → `won`; add end screens and restart on Space/click.
-8. Add HUD and high score load/save in `localStorage` (guarded with try/catch).
+8. Add HUD and high score load/save in `localStorage` (`src/storage.js`, guarded with try/catch).
 
 ## Acceptance criteria
 
@@ -87,13 +88,15 @@ Conventions:
 - **Yes:** fixed 480x640 canvas, no resize logic. Keeps the MVP simple.
 - **No:** sounds and explosion animation. Explicitly deferred by the user.
 - **No:** gray multi-hit bricks. Needs HP state; goes in a later spec.
-- **No:** ES modules or build step. Project uses plain global scripts like `assets/spritesheet.js`.
+- **Yes:** SRP per file (HTML structure, CSS style, one JS file per responsibility) and BEM naming in HTML/CSS. Files are created in the step that needs them.
+- **Yes:** native ES modules (`import`/`export`), no build step. Dependencies explicit instead of implicit globals and script order; `assets/spritesheet.js` gets `export` on its helpers.
+- **No:** build step or bundler.
 
 ## Risks
 
 | Risk                                        | Mitigation                                                       |
 | ------------------------------------------- | ---------------------------------------------------------------- |
-| Spritesheet fails when opened via `file://` | Document running with `python3 -m http.server`.                  |
+| Spritesheet and ES modules fail via `file://` | Document running with `python3 -m http.server`.                |
 | Ball tunnels through a brick at high speed  | Keep speed below brick height per frame (≤ 6 px/frame).          |
 | `localStorage` unavailable                  | Wrap read/write in try/catch; fall back to in-memory high score. |
 

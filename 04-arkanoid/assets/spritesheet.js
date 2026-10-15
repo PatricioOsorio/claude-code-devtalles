@@ -28,7 +28,7 @@ let ssImg = null;
 let ssLoaded = false;
 const ssCallbacks = [];
 
-function loadSpritesheet( cb ) {
+export function loadSpritesheet( cb ) {
   if ( ssLoaded ) { cb(); return; }
   ssCallbacks.push( cb );
   if ( ssImg ) return;
@@ -48,12 +48,12 @@ function loadSpritesheet( cb ) {
   rawImg.src = 'assets/spritesheet-breakout.png';
 }
 
-function drawFrame( ctx, frame, x, y, w, h ) {
+export function drawFrame( ctx, frame, x, y, w, h ) {
   if ( !ssLoaded ) return;
   ctx.drawImage( ssImg, frame.sx, frame.sy, frame.sw, frame.sh, x, y, w, h );
 }
 
-function drawSprite( ctx, name, x, y, w, h ) {
+export function drawSprite( ctx, name, x, y, w, h ) {
   if ( !ssLoaded ) return;
   let sp;
   if ( name.startsWith( 'block_' ) ) {

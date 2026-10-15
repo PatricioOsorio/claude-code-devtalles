@@ -8,7 +8,7 @@ Arkanoid game in plain HTML + CSS + JavaScript (canvas). README says game is not
 
 ## Assets
 
-- `assets/spritesheet.js`: plain global script (no modules). Defines `SPRITES` (paddle, ball, `blocks.<color>`), `EXPLOSION_FRAMES` (4 frames per color, `EXPLOSION_DURATION = 150` ms), and helpers `loadSpritesheet(cb)`, `drawFrame(ctx, frame, x, y, w, h)`, `drawSprite(ctx, name, x, y, w, h)`. Block sprites use the `block_<color>` name. Must include via `<script>` before game code and call `loadSpritesheet` before drawing; draw helpers silently no-op until loaded.
+- `assets/spritesheet.js`: ES module (`export`ed helpers). Defines `SPRITES` (paddle, ball, `blocks.<color>`), `EXPLOSION_FRAMES` (4 frames per color, `EXPLOSION_DURATION = 150` ms), and helpers `loadSpritesheet(cb)`, `drawFrame(ctx, frame, x, y, w, h)`, `drawSprite(ctx, name, x, y, w, h)`. Block sprites use the `block_<color>` name. Import it from game code and call `loadSpritesheet` before drawing; draw helpers silently no-op until loaded.
 - Spritesheet path is hardcoded as `assets/spritesheet-breakout.png`, relative to the HTML page, so `index.html` must live at project root.
 - `assets/sounds/`: `ball-bounce.mp3`, `break-sound.mp3`.
 
