@@ -1,6 +1,6 @@
 # SPEC 01 — Arkanoid MVP
 
-> **Status:** Draft
+> **Status:** Approved
 > **Depends on:** None
 > **Date:** 2026-10-15
 > **Objective:** A playable single-level Arkanoid in plain HTML + CSS + JS canvas with paddle, ball, bricks, 3 lives, on-screen score and a persisted high score.
@@ -29,18 +29,21 @@
 ## Data model
 
 ```js
-const W = 480, H = 640;
+const W = 480,
+  H = 640;
 const COLORS = ['red', 'yellow', 'cyan', 'magenta', 'hotpink', 'green']; // top to bottom
 const BRICK = { w: 48, h: 24, rows: 6, cols: 10, top: 60 };
 
 const state = {
-  phase: 'ready',   // 'ready' | 'playing' | 'won' | 'over'
+  phase: 'ready', // 'ready' | 'playing' | 'won' | 'over'
   score: 0,
   lives: 3,
-  highScore: 0,     // mirrored from localStorage
+  highScore: 0, // mirrored from localStorage
   paddle: { x, y, w: 96, h: 14, speed: 6 },
   ball: { x, y, r: 6, vx, vy },
-  bricks: [/* { x, y, color, alive } */],
+  bricks: [
+    /* { x, y, color, alive } */
+  ],
 };
 ```
 
@@ -88,11 +91,11 @@ Conventions:
 
 ## Risks
 
-| Risk | Mitigation |
-| ---- | ---------- |
-| Spritesheet fails when opened via `file://` | Document running with `python3 -m http.server`. |
-| Ball tunnels through a brick at high speed | Keep speed below brick height per frame (≤ 6 px/frame). |
-| `localStorage` unavailable | Wrap read/write in try/catch; fall back to in-memory high score. |
+| Risk                                        | Mitigation                                                       |
+| ------------------------------------------- | ---------------------------------------------------------------- |
+| Spritesheet fails when opened via `file://` | Document running with `python3 -m http.server`.                  |
+| Ball tunnels through a brick at high speed  | Keep speed below brick height per frame (≤ 6 px/frame).          |
+| `localStorage` unavailable                  | Wrap read/write in try/catch; fall back to in-memory high score. |
 
 ## What is **not** in this spec
 
