@@ -1,6 +1,6 @@
 # SPEC 03 — Destruction FX, ball loss and Game Over
 
-> **Status:** Draft
+> **Status:** Approved
 > **Depends on:** SPEC 01, SPEC 02
 > **Date:** 2026-10-15
 > **Objective:** Replace the plain brick burst, the instant life loss and the static Game Over panel with neon shatter shards, a ball-loss explosion with a short pause, and an animated Game Over screen, all using depth layers (far/near parallax and drop shadows).
@@ -108,12 +108,12 @@ Conventions:
 
 ## Risks
 
-| Risk                                                       | Mitigation                                                                                           |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| Many shards + particles + rings drop FPS during chain hits | Counts are constants in `FX`; ring and shard lifetimes are short; reduced motion cuts counts.         |
-| Red edge flash and shake bother photosensitive users       | `lostFlash` capped at 0.18 and fades fast; reduced motion removes flash and shake.                   |
-| Pause makes the game feel unresponsive                     | `lostFrames` is one constant (~600 ms); lower it if it feels long.                                   |
-| Far-layer FX drawn behind bricks are hidden by opaque bricks | Intended: they appear in the gaps and as the bricks disappear; tune `farAlpha` while testing.       |
+| Risk                                                         | Mitigation                                                                                    |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| Many shards + particles + rings drop FPS during chain hits   | Counts are constants in `FX`; ring and shard lifetimes are short; reduced motion cuts counts. |
+| Red edge flash and shake bother photosensitive users         | `lostFlash` capped at 0.18 and fades fast; reduced motion removes flash and shake.            |
+| Pause makes the game feel unresponsive                       | `lostFrames` is one constant (~600 ms); lower it if it feels long.                            |
+| Far-layer FX drawn behind bricks are hidden by opaque bricks | Intended: they appear in the gaps and as the bricks disappear; tune `farAlpha` while testing. |
 
 ## What is **not** in this spec
 
