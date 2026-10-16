@@ -58,9 +58,9 @@ function update() {
 
   const { ball } = state;
   const launch = input.takeLaunch();
-  if (state.phase === 'over' || state.phase === 'won') {
+  if (state.phase === 'over') {
     // The Game Over entrance cannot be skipped by mashing Space.
-    const entered = state.phase === 'won' || fx.reducedMotion || fx.overT >= FX.overEnterFrames;
+    const entered = fx.reducedMotion || fx.overT >= FX.overEnterFrames;
     if (launch && entered) {
       state = createState(state.highScore);
       fx.levelT = 0;

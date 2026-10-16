@@ -93,7 +93,6 @@ export function render(ctx, state, fx) {
   drawHud(ctx, state);
   if (fx.levelT < LEVEL.bannerFrames && state.phase !== 'over') drawLevelBanner(ctx, state, fx);
 
-  if (state.phase === 'won') drawEndScreen(ctx, state, 'YOU WIN', '#4ade80');
   if (state.phase === 'over') {
     const still = fx.reducedMotion;
     const enter = still ? 1 : Math.min(fx.overT / FX.overEnterFrames, 1);
@@ -231,18 +230,14 @@ function hudValue(ctx, text, x, y, color) {
   ctx.fillText(text, x, y);
 }
 
-// `anim` is only passed by Game Over; the win screen keeps its static look.
-function drawEndScreen(ctx, { score, highScore }, title, accent, anim = { enter: 1, count: 1 }) {
-  const { enter, count, pulse } = anim;
-  if (pulse !== undefined) {
-    // 'saturation' blend with mid-gray desaturates whatever is already drawn.
-    ctx.save();
-    ctx.globalCompositeOperation = 'saturation';
-    ctx.globalAlpha = enter;
-    ctx.fillStyle = '#808080';
-    ctx.fillRect(0, 0, W, H);
-    ctx.restore();
-  }
+function drawEndScreen(ctx, { score, highScore }, title, accent, { enter, count, pulse }) {
+  // 'saturation' blend with mid-gray desaturates whatever is already drawn.
+  ctx.save();
+  ctx.globalCompositeOperation = 'saturation';
+  ctx.globalAlpha = enter;
+  ctx.fillStyle = '#808080';
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
   ctx.fillStyle = `rgba(10, 12, 16, ${0.78 * enter})`;
   ctx.fillRect(0, 0, W, H);
 
@@ -256,7 +251,7 @@ function drawEndScreen(ctx, { score, highScore }, title, accent, anim = { enter:
   ctx.beginPath();
   ctx.roundRect(px, py, pw, ph, 16);
   ctx.fill();
-  ctx.lineWidth = pulse === undefined ? 2 : 2 + 2 * (0.5 + 0.5 * Math.sin(pulse * 0.15));
+  ctx.lineWidth = 2 + 2 * (0.5 + 0.5 * Math.sin(pulse * 0.15));
   ctx.strokeStyle = accent;
   ctx.stroke();
   ctx.restore();
