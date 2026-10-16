@@ -1,4 +1,5 @@
-import { W, H, PADDLE, BALL, BRICK, COLORS, LIVES, FX } from './src/config.js';
+import { W, H, PADDLE, BALL, BRICK, LIVES, FX } from './src/config.js';
+import { createLevel } from './src/levels.js';
 import { createInput } from './src/input.js';
 import { bounceOffWalls, bounceOffPaddle, bounceOffBricks } from './src/physics.js';
 import { loadHighScore, saveHighScore } from './src/storage.js';
@@ -12,22 +13,6 @@ const input = createInput(canvas);
 
 const paddleY = H - PADDLE.bottomOffset;
 
-function createBricks() {
-  const left = (W - (BRICK.cols * BRICK.w + (BRICK.cols - 1) * BRICK.gap)) / 2;
-  const bricks = [];
-  for (let row = 0; row < BRICK.rows; row++) {
-    for (let col = 0; col < BRICK.cols; col++) {
-      bricks.push({
-        x: left + col * (BRICK.w + BRICK.gap),
-        y: BRICK.top + row * (BRICK.h + BRICK.gap),
-        color: COLORS[row],
-        alive: true,
-      });
-    }
-  }
-  return bricks;
-}
-
 function createState(highScore) {
   return {
     phase: 'ready',
@@ -35,7 +20,8 @@ function createState(highScore) {
     score: 0,
     lives: LIVES,
     highScore,
-    bricks: createBricks(),
+    level: 1,
+    bricks: createLevel(1),
     paddle: { x: (W - PADDLE.w) / 2, y: paddleY, w: PADDLE.w, h: PADDLE.h, speed: PADDLE.speed },
     ball: { x: W / 2, y: paddleY - BALL.r, r: BALL.r, vx: 0, vy: 0 },
   };
@@ -62,6 +48,7 @@ function update() {
   updateFx(fx);
   trackBall(fx, state.ball, state.phase === 'playing');
   fx.overT = state.phase === 'over' ? fx.overT + 1 : 0;
+  fx.levelT++;
   const { paddle } = state;
   const mouseX = input.takeMouseX();
   if (mouseX !== null) paddle.x = mouseX - paddle.w / 2;
@@ -73,7 +60,10 @@ function update() {
   if (state.phase === 'over' || state.phase === 'won') {
     // The Game Over entrance cannot be skipped by mashing Space.
     const entered = state.phase === 'won' || fx.reducedMotion || fx.overT >= FX.overEnterFrames;
-    if (launch && entered) state = createState(state.highScore);
+    if (launch && entered) {
+      state = createState(state.highScore);
+      fx.levelT = 0;
+    }
     return;
   }
   if (state.phase === 'lost') {
@@ -111,7 +101,12 @@ function update() {
       saveHighScore(state.highScore);
     }
     if (state.bricks.every((b) => !b.alive)) {
-      state.phase = 'won';
+      state.level++;
+      state.bricks = createLevel(state.level);
+      ball.vx = 0;
+      ball.vy = 0;
+      state.phase = 'ready';
+      fx.levelT = 0;
       return;
     }
   }
