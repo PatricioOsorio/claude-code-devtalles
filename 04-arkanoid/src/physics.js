@@ -1,17 +1,23 @@
 import { W, HUD_H, PADDLE, BRICK } from './config.js';
 
+// Returns true when the ball bounced off at least one wall.
 export function bounceOffWalls(ball) {
+  let bounced = false;
   if (ball.x - ball.r < 0) {
     ball.x = ball.r;
     ball.vx = Math.abs(ball.vx);
+    bounced = true;
   } else if (ball.x + ball.r > W) {
     ball.x = W - ball.r;
     ball.vx = -Math.abs(ball.vx);
+    bounced = true;
   }
   if (ball.y - ball.r < HUD_H) {
     ball.y = HUD_H + ball.r;
     ball.vy = Math.abs(ball.vy);
+    bounced = true;
   }
+  return bounced;
 }
 
 // Bounce angle grows with distance from paddle center; speed stays constant. Returns true on hit.
