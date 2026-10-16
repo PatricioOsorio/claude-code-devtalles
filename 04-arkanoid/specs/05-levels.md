@@ -1,6 +1,6 @@
 # SPEC 05 — Endless generated levels
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** SPEC 01, SPEC 03
 > **Date:** 2026-10-15
 > **Objective:** Replace the single fixed brick grid with endless, randomly generated levels that advance when all bricks are cleared, keeping score and lives, with a `LEVEL n` HUD entry and a short level banner.
