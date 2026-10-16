@@ -4,6 +4,7 @@ import { bounceOffWalls, bounceOffPaddle, bounceOffBricks } from './src/physics.
 import { loadHighScore, saveHighScore } from './src/storage.js';
 import { createFx, updateFx, trackBall, emit } from './src/fx.js';
 import { render } from './src/renderer.js';
+import { playSound } from './src/audio.js';
 import { loadSpritesheet } from './assets/spritesheet.js';
 
 const canvas = document.getElementById('game');
@@ -94,8 +95,11 @@ function update() {
 
   ball.x += ball.vx;
   ball.y += ball.vy;
-  bounceOffWalls(ball);
-  if (bounceOffPaddle(ball, paddle)) emit(fx, 'paddleHit');
+  if (bounceOffWalls(ball)) playSound('bounce');
+  if (bounceOffPaddle(ball, paddle)) {
+    emit(fx, 'paddleHit');
+    playSound('bounce');
+  }
 
   const hit = bounceOffBricks(ball, state.bricks);
   if (hit) {
@@ -105,6 +109,7 @@ function update() {
       y: hit.y + BRICK.h / 2,
       color: hit.color,
     });
+    playSound('break');
     state.score += BRICK.points;
     if (state.score > state.highScore) {
       state.highScore = state.score;

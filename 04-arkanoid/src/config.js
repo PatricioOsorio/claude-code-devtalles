@@ -11,6 +11,14 @@ export const BRICK = { w: 42, h: 20, gap: 4, rows: 6, cols: 10, top: HUD_H + 40,
 
 export const LIVES = 3;
 
+export const SOUND = {
+  volume: 0.5, // 0..1, applied to every effect
+  files: {
+    bounce: 'assets/sounds/ball-bounce.mp3',
+    break: 'assets/sounds/break-sound.mp3',
+  },
+};
+
 export const FX_COLORS = {
   red: '#ff4d6d',
   yellow: '#ffd23f',
