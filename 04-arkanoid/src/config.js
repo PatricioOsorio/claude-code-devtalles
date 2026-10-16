@@ -19,6 +19,14 @@ export const SOUND = {
   },
 };
 
+export const LEVEL = {
+  baseRows: 2, // rows at level 1
+  rowsPerLevel: 1, // added rows per level, capped at BRICK.rows
+  baseDensity: 0.6, // chance a cell has a brick at level 1
+  densityPerLevel: 0.05, // added per level, capped at 1
+  bannerFrames: 90, // ~1.5 s
+};
+
 export const FX_COLORS = {
   red: '#ff4d6d',
   yellow: '#ffd23f',

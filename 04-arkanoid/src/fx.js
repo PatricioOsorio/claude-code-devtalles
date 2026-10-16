@@ -87,6 +87,7 @@ export function createFx() {
     flash: 0,
     edgeFlash: 0,
     overT: 0,
+    levelT: 0,
     reducedMotion: false,
   };
   // Without matchMedia the game keeps full effects.

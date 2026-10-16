@@ -1,4 +1,4 @@
-import { W, H, HUD_H, BRICK, FX, FX_COLORS } from './config.js';
+import { W, H, HUD_H, BRICK, FX, FX_COLORS, LEVEL } from './config.js';
 import { applyBloom } from './bloom.js';
 import { drawBackground } from './background.js';
 import { drawSprite } from '../assets/spritesheet.js';
@@ -91,6 +91,7 @@ export function render(ctx, state, fx) {
   ctx.drawImage(vignette, 0, 0);
 
   drawHud(ctx, state);
+  if (fx.levelT < LEVEL.bannerFrames && state.phase !== 'over') drawLevelBanner(ctx, state, fx);
 
   if (state.phase === 'won') drawEndScreen(ctx, state, 'YOU WIN', '#4ade80');
   if (state.phase === 'over') {
@@ -167,7 +168,25 @@ function drawRings(ctx, { rings }) {
   ctx.restore();
 }
 
-function drawHud(ctx, { score, highScore, lives }) {
+// Drawn after bloom so the text stays crisp; plain (no fade/scale) with reduced motion.
+function drawLevelBanner(ctx, { level }, fx) {
+  const t = fx.levelT / LEVEL.bannerFrames;
+  const still = fx.reducedMotion;
+  ctx.save();
+  ctx.globalAlpha = still ? 1 : 1 - t;
+  ctx.translate(W / 2, H / 2);
+  if (!still) ctx.scale(1 + 0.2 * t, 1 + 0.2 * t);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.shadowColor = FX_COLORS.cyan;
+  ctx.shadowBlur = still ? 0 : 20;
+  ctx.fillStyle = '#fff';
+  ctx.font = `800 40px ${FONT}`;
+  ctx.fillText(`LEVEL ${level}`, 0, 0);
+  ctx.restore();
+}
+
+function drawHud(ctx, { score, highScore, lives, level }) {
   ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
   ctx.fillRect(0, 0, W, HUD_H);
   ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
@@ -185,6 +204,10 @@ function drawHud(ctx, { score, highScore, lives }) {
   ctx.textAlign = 'center';
   hudLabel(ctx, 'HIGH', W / 2, labelY);
   hudValue(ctx, String(highScore).padStart(5, '0'), W / 2, valueY, '#fbbf24');
+
+  ctx.textAlign = 'center';
+  hudLabel(ctx, 'LEVEL', W / 2 + 80, labelY);
+  hudValue(ctx, String(level), W / 2 + 80, valueY, '#fff');
 
   ctx.textAlign = 'right';
   hudLabel(ctx, 'LIVES', W - pad, labelY);
