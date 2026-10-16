@@ -1,6 +1,6 @@
 # SPEC 04 — Sound effects
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** SPEC 01, SPEC 03
 > **Date:** 2026-10-15
 > **Objective:** Play `ball-bounce.mp3` when the ball bounces off a wall or the paddle and `break-sound.mp3` when a brick is destroyed, with minimal changes to `game.js`.
