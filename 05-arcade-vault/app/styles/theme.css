@@ -1,0 +1,100 @@
+/* Design tokens. Single source of truth: every color, glow and animation lives here. */
+
+@theme {
+  --color-surface: #0a0a0f;
+  --color-surface-2: #0f0f18;
+  --color-surface-3: #15151f;
+  --color-ink: #e6e9ff;
+  --color-ink-dim: #8a8fb5;
+  --color-ink-faint: #4a4f70;
+  --color-cyan: #00f5ff;
+  --color-magenta: #ff006e;
+  --color-yellow: #f5ff00;
+  --color-green: #00ff88;
+  --color-gold: #ffcf3a;
+  --color-silver: #c7d0e0;
+  --color-bronze: #d97a3a;
+  --color-line: color-mix(in oklab, var(--color-cyan) 18%, transparent);
+  --color-line-2: rgb(255 255 255 / 0.06);
+
+  /* Outer + inset glow, used on hover/active of bordered controls */
+  --shadow-glow-cyan: 0 0 14px color-mix(in oklab, var(--color-cyan) 55%, transparent),
+    inset 0 0 8px color-mix(in oklab, var(--color-cyan) 35%, transparent);
+  --shadow-glow-magenta: 0 0 14px color-mix(in oklab, var(--color-magenta) 55%, transparent),
+    inset 0 0 8px color-mix(in oklab, var(--color-magenta) 35%, transparent);
+  --shadow-glow-yellow: 0 0 14px color-mix(in oklab, var(--color-yellow) 55%, transparent),
+    inset 0 0 8px color-mix(in oklab, var(--color-yellow) 35%, transparent);
+  --shadow-focus: 0 0 12px color-mix(in oklab, var(--color-cyan) 35%, transparent);
+
+  --text-shadow-neon-cyan: 0 0 6px color-mix(in oklab, var(--color-cyan) 65%, transparent),
+    0 0 16px color-mix(in oklab, var(--color-cyan) 45%, transparent);
+  --text-shadow-neon-magenta: 0 0 6px color-mix(in oklab, var(--color-magenta) 65%, transparent),
+    0 0 16px color-mix(in oklab, var(--color-magenta) 45%, transparent);
+  --text-shadow-neon-yellow: 0 0 6px color-mix(in oklab, var(--color-yellow) 65%, transparent),
+    0 0 16px color-mix(in oklab, var(--color-yellow) 45%, transparent);
+  --text-shadow-neon-green: 0 0 6px color-mix(in oklab, var(--color-green) 65%, transparent),
+    0 0 16px color-mix(in oklab, var(--color-green) 45%, transparent);
+
+  --animate-gridscroll: gridscroll 8s linear infinite;
+  --animate-flicker: flicker 5s steps(1, end) infinite;
+  --animate-blink: blink 1.2s steps(1, end) infinite;
+  --animate-pulse-glow: pulse-glow 1.6s ease-in-out infinite;
+  --animate-bob: bob 2s ease-in-out infinite;
+  --animate-drift: drift 3s ease-in-out infinite;
+  --animate-spinpix: spinpix 0.6s steps(8) infinite;
+  --animate-typewriter: typewriter 1.6s steps(22) forwards, caret 0.8s steps(1) infinite;
+  --animate-rise: rise 360ms ease-out forwards;
+  --animate-fade-in: fade-in 240ms ease-out;
+  --animate-slide-in: slide-in 260ms ease-out;
+
+  @keyframes gridscroll {
+    to { background-position: 0 60px, 0 60px; }
+  }
+  @keyframes flicker {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+    20%, 24%, 55% { opacity: 0.35; }
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 transparent, inset 0 0 0 transparent; }
+    50% {
+      box-shadow: 0 0 20px var(--color-cyan),
+        inset 0 0 12px color-mix(in oklab, var(--color-cyan) 45%, transparent);
+    }
+  }
+  @keyframes bob {
+    50% { transform: translateX(-50%) translateY(-6px); }
+  }
+  @keyframes drift {
+    50% { transform: translate(20px, 10px); }
+  }
+  @keyframes spinpix {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes typewriter {
+    to { width: 22ch; }
+  }
+  @keyframes caret {
+    50% { border-color: transparent; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateX(12px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+/* `inline` because the values reference next/font variables set on <html> at runtime */
+@theme inline {
+  --font-pixel: var(--font-press-start), system-ui, monospace;
+  --font-mono: var(--font-jetbrains), "Courier Prime", "Courier New", monospace;
+}
