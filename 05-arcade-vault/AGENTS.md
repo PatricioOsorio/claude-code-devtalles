@@ -50,3 +50,7 @@ Package manager: bun.
 
 - **DO**: Spec first via `/spec`, implement via `/spec-impl` (skills from `Klerith/fernando-skills`).
 - **DON'T**: Treat `app/page.tsx` or layout metadata as real. Still create-next-app boilerplate.
+
+## Skills
+
+- **DO**: Use always the skill `/frontend-design` for all UX/UI work.

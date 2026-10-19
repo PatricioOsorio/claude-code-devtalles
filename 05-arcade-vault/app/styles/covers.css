@@ -1,0 +1,153 @@
+/* Game cover art, pure CSS. Needs ::before/::after, so it can't be inline styles.
+   Usage: <div class="cover-bg cover-{slug}"> inside a relatively positioned box. */
+
+@layer components {
+  .cover-bg {
+    position: absolute;
+    inset: 0;
+  }
+
+  .cover-bricks {
+    background:
+      repeating-linear-gradient(90deg, var(--color-magenta) 0 32px, #ffae00 32px 64px, var(--color-cyan) 64px 96px, var(--color-green) 96px 128px) 0 0 / 100% 32px,
+      var(--color-surface-3);
+  }
+  .cover-bricks::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent 0 32px, rgb(0 0 0 / 0.4) 32px 33px);
+  }
+
+  .cover-tetro {
+    background: radial-gradient(circle at 50% 100%, #2a004a, #0a0a18);
+  }
+  .cover-tetro::after {
+    content: "";
+    position: absolute;
+    inset: 20% 30% 0 30%;
+    background:
+      linear-gradient(var(--color-cyan), var(--color-cyan)) 0 0 / 25% 33%,
+      linear-gradient(var(--color-magenta), var(--color-magenta)) 25% 0 / 25% 33%,
+      linear-gradient(var(--color-yellow), var(--color-yellow)) 50% 33% / 25% 33%,
+      linear-gradient(var(--color-green), var(--color-green)) 25% 66% / 25% 33%,
+      linear-gradient(#ff7700, #ff7700) 50% 66% / 25% 33%,
+      linear-gradient(#aa00ff, #aa00ff) 75% 33% / 25% 33%;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 8px color-mix(in oklab, var(--color-cyan) 40%, transparent));
+    image-rendering: pixelated;
+  }
+
+  .cover-snake {
+    background: linear-gradient(135deg, #003a2a, #0a0a18);
+  }
+  .cover-snake::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 70% 50%, var(--color-magenta) 0 6px, transparent 7px),
+      linear-gradient(90deg, var(--color-green) 0 40px, transparent 40px) 20% 50% / 200px 12px no-repeat,
+      linear-gradient(90deg, var(--color-green) 0 12px, transparent 12px) calc(20% + 40px) calc(50% - 12px) / 12px 12px no-repeat,
+      linear-gradient(90deg, var(--color-green) 0 12px, transparent 12px) calc(20% + 28px) calc(50% - 12px) / 12px 12px no-repeat;
+    filter: drop-shadow(0 0 6px color-mix(in oklab, var(--color-green) 60%, transparent));
+  }
+
+  .cover-glot {
+    background: radial-gradient(circle at 50% 50%, #1a002a, #0a0a18);
+  }
+  .cover-glot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 50%, var(--color-yellow) 0 38px, transparent 39px),
+      radial-gradient(circle at 70% 50%, var(--color-magenta) 0 6px, transparent 7px),
+      radial-gradient(circle at 82% 50%, var(--color-cyan) 0 6px, transparent 7px);
+    clip-path: polygon(0 0, 30% 0, 30% 50%, 100% 30%, 100% 70%, 30% 50%, 30% 100%, 0 100%);
+    filter: drop-shadow(0 0 8px color-mix(in oklab, var(--color-yellow) 50%, transparent));
+  }
+  .cover-glot::before {
+    content: "•••";
+    position: absolute;
+    left: 55%;
+    top: 47%;
+    color: var(--color-cyan);
+    letter-spacing: 6px;
+    font-size: 18px;
+    text-shadow: 0 0 6px var(--color-cyan);
+  }
+
+  .cover-invaders {
+    background: linear-gradient(180deg, #001a3a, #0a0a18);
+  }
+  .cover-invaders::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 30%, var(--color-green) 0 5px, transparent 6px),
+      radial-gradient(circle at 40% 30%, var(--color-green) 0 5px, transparent 6px),
+      radial-gradient(circle at 60% 30%, var(--color-green) 0 5px, transparent 6px),
+      radial-gradient(circle at 80% 30%, var(--color-green) 0 5px, transparent 6px),
+      radial-gradient(circle at 20% 50%, var(--color-magenta) 0 5px, transparent 6px),
+      radial-gradient(circle at 40% 50%, var(--color-magenta) 0 5px, transparent 6px),
+      radial-gradient(circle at 60% 50%, var(--color-magenta) 0 5px, transparent 6px),
+      radial-gradient(circle at 80% 50%, var(--color-magenta) 0 5px, transparent 6px),
+      radial-gradient(circle at 50% 80%, var(--color-cyan) 0 8px, transparent 9px);
+    filter: drop-shadow(0 0 6px color-mix(in oklab, var(--color-green) 60%, transparent));
+  }
+
+  .cover-rocas {
+    background: radial-gradient(circle at 50% 50%, #0a0a30, #000);
+  }
+  .cover-rocas::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 22% 30%, #888 0 18px, transparent 19px),
+      radial-gradient(circle at 75% 60%, #aaa 0 26px, transparent 27px),
+      radial-gradient(circle at 50% 80%, #777 0 14px, transparent 15px),
+      radial-gradient(circle at 88% 22%, var(--color-cyan) 0 2px, transparent 3px),
+      radial-gradient(circle at 12% 70%, var(--color-cyan) 0 2px, transparent 3px),
+      radial-gradient(circle at 60% 20%, var(--color-cyan) 0 2px, transparent 3px);
+  }
+  .cover-rocas::before {
+    content: "▲";
+    position: absolute;
+    left: 48%;
+    top: 44%;
+    color: var(--color-yellow);
+    font-size: 22px;
+    text-shadow: 0 0 8px var(--color-yellow);
+  }
+
+  .cover-rana {
+    background: linear-gradient(180deg, #001f2a, #0a0a18);
+  }
+  .cover-rana::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, color-mix(in oklab, var(--color-cyan) 18%, transparent) 0 20px, transparent 20px 40px),
+      radial-gradient(circle at 50% 55%, var(--color-green) 0 14px, transparent 15px);
+    filter: drop-shadow(0 0 8px color-mix(in oklab, var(--color-green) 50%, transparent));
+  }
+
+  .cover-duelo {
+    background: #0a0a18;
+  }
+  .cover-duelo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, var(--color-ink) 0 10px, transparent 10px 20px) 50% 0 / 2px 100% no-repeat,
+      linear-gradient(var(--color-cyan), var(--color-cyan)) 6% 35% / 6px 30% no-repeat,
+      linear-gradient(var(--color-magenta), var(--color-magenta)) 88% 35% / 6px 30% no-repeat,
+      radial-gradient(circle at 60% 60%, var(--color-yellow) 0 5px, transparent 6px);
+    filter: drop-shadow(0 0 6px color-mix(in oklab, var(--color-cyan) 40%, transparent));
+  }
+}
