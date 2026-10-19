@@ -24,6 +24,8 @@
     inset 0 0 8px color-mix(in oklab, var(--color-magenta) 35%, transparent);
   --shadow-glow-yellow: 0 0 14px color-mix(in oklab, var(--color-yellow) 55%, transparent),
     inset 0 0 8px color-mix(in oklab, var(--color-yellow) 35%, transparent);
+  --shadow-glow-green: 0 0 14px color-mix(in oklab, var(--color-green) 55%, transparent),
+    inset 0 0 8px color-mix(in oklab, var(--color-green) 35%, transparent);
   --shadow-focus: 0 0 12px color-mix(in oklab, var(--color-cyan) 35%, transparent);
 
   --text-shadow-neon-cyan: 0 0 6px color-mix(in oklab, var(--color-cyan) 65%, transparent),
