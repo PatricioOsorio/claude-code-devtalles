@@ -12,7 +12,69 @@
   clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
 }
 
+@utility neon-cyan {
+  color: var(--color-cyan);
+  text-shadow: var(--text-shadow-neon-cyan);
+}
+
+@utility neon-magenta {
+  color: var(--color-magenta);
+  text-shadow: var(--text-shadow-neon-magenta);
+}
+
+@utility neon-yellow {
+  color: var(--color-yellow);
+  text-shadow: var(--text-shadow-neon-yellow);
+}
+
+@utility neon-green {
+  color: var(--color-green);
+  text-shadow: var(--text-shadow-neon-green);
+}
+
+@utility hero-title {
+  font-family: var(--font-pixel);
+  font-size: clamp(28px, 6vw, 64px);
+  letter-spacing: 0.06em;
+  background: linear-gradient(180deg, #ffffff 0%, var(--color-cyan) 60%, var(--color-magenta) 110%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 12px color-mix(in oklab, var(--color-cyan) 40%, transparent));
+}
+
+@utility hall-title {
+  font-family: var(--font-pixel);
+  font-size: clamp(24px, 4.5vw, 44px);
+  letter-spacing: 0.08em;
+  background: linear-gradient(180deg, var(--color-yellow), var(--color-magenta));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 14px color-mix(in oklab, var(--color-yellow) 40%, transparent));
+}
+
 @layer components {
+  .logo-mark {
+    width: 28px;
+    height: 28px;
+    background:
+      linear-gradient(45deg, var(--color-magenta) 0 50%, transparent 50%),
+      linear-gradient(-45deg, var(--color-cyan) 0 50%, transparent 50%);
+    background-blend-mode: screen;
+    box-shadow:
+      0 0 12px color-mix(in oklab, var(--color-cyan) 55%, transparent),
+      inset 0 0 6px color-mix(in oklab, var(--color-magenta) 50%, transparent);
+    border: 1px solid rgb(255 255 255 / 0.18);
+  }
+
+  .coin-badge {
+    width: 14px;
+    height: 14px;
+    border-radius: 9999px;
+    background: radial-gradient(circle at 35% 35%, #fff8b0, #f5ff00 60%, #b0b800);
+    box-shadow: 0 0 8px var(--color-yellow);
+  }
   /* Page backdrop: perspective floor grid + scanlines. Pair with .arcade-noise. */
   .arcade-bg {
     position: fixed;
@@ -105,5 +167,71 @@
     background: repeating-linear-gradient(0deg, rgb(0 0 0 / 0.18) 0 2px, transparent 2px 4px);
     pointer-events: none;
     mix-blend-mode: multiply;
+  }
+
+  /* Decorative fake in-screen game arena */
+  .game-arena {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(circle at 50% 50%, #0a0030 0%, #000000 70%),
+      #000000;
+  }
+
+  .game-arena .grid-floor {
+    position: absolute;
+    inset: 50% 0 0 0;
+    background:
+      linear-gradient(to right, color-mix(in oklab, var(--color-cyan) 40%, transparent) 1px, transparent 1px) 0 0 / 40px 40px,
+      linear-gradient(to bottom, color-mix(in oklab, var(--color-cyan) 40%, transparent) 1px, transparent 1px) 0 0 / 40px 40px;
+    transform: perspective(300px) rotateX(70deg);
+    transform-origin: top;
+    animation: var(--animate-gridscroll);
+    opacity: 0.7;
+  }
+
+  .game-arena .player-ship {
+    position: absolute;
+    bottom: 14%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-bottom: 22px solid var(--color-cyan);
+    filter: drop-shadow(0 0 8px var(--color-cyan));
+    transform: translateX(-50%);
+    animation: var(--animate-bob);
+  }
+
+  .game-arena .enemy {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: var(--color-magenta);
+    box-shadow: 0 0 8px var(--color-magenta);
+  }
+
+  .game-arena .e1 {
+    top: 18%;
+    left: 22%;
+    animation: var(--animate-drift);
+  }
+
+  .game-arena .e2 {
+    top: 26%;
+    left: 70%;
+    animation: var(--animate-drift) reverse;
+  }
+
+  .game-arena .e3 {
+    top: 14%;
+    left: 50%;
+    background: var(--color-yellow);
+    box-shadow: 0 0 8px var(--color-yellow);
+    animation: var(--animate-drift);
   }
 }

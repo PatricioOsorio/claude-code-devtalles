@@ -6,10 +6,11 @@ export const buttonVariants = cva(
   {
     variants: {
       tone: {
-        cyan: "border-cyan text-ink hover:text-cyan hover:shadow-glow-cyan",
-        magenta: "border-magenta text-ink hover:text-magenta hover:shadow-glow-magenta",
-        yellow: "border-yellow text-ink hover:text-yellow hover:shadow-glow-yellow",
-        ghost: "border-ink-faint text-ink-dim hover:border-ink-dim hover:text-ink",
+        cyan: "border-cyan text-ink hover:text-cyan hover:shadow-glow-cyan before:border-cyan/25",
+        magenta: "border-magenta text-ink hover:text-magenta hover:shadow-glow-magenta before:border-magenta/25",
+        yellow: "border-yellow text-ink hover:text-yellow hover:shadow-glow-yellow before:border-yellow/25",
+        green: "border-green text-ink hover:text-green hover:shadow-glow-green before:border-green/25",
+        ghost: "border-ink-faint text-ink-dim hover:border-ink-dim hover:text-ink before:border-ink-faint/25",
       },
       size: {
         md: "px-5 py-3 text-[10px]",

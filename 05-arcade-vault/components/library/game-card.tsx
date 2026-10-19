@@ -1,17 +1,18 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
+import type { ITone } from "@/lib/data";
 
-type IGameCardProps = {
+export interface IGameCardProps {
   id: string;
   title: string;
   short: string;
   cat: string;
   cover: string;
-  tone: "cyan" | "magenta" | "yellow";
+  tone: ITone;
   best: number;
   className?: string;
-};
+}
 
 export function GameCard({
   id,
@@ -26,7 +27,7 @@ export function GameCard({
   return (
     <article
       className={cn(
-        "group relative flex flex-col gap-3.5 border border-line bg-linear-to-b from-surface-2 to-surface-3 p-3.5 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1.5 hover:border-cyan hover:shadow-glow-cyan",
+        "group relative flex flex-col gap-3.5 border border-line bg-linear-to-b from-surface-2 to-surface-3 p-3.5 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1.5 hover:border-cyan hover:shadow-glow-cyan before:pointer-events-none before:absolute before:inset-[-1px] before:bg-[linear-gradient(135deg,transparent_60%,color-mix(in_oklab,var(--color-cyan)_40%,transparent))] before:opacity-0 before:transition-opacity before:duration-200 hover:before:opacity-100",
         className,
       )}
     >
@@ -50,7 +51,7 @@ export function GameCard({
             href={`/games/${id}`}
             className={buttonVariants({ tone })}
           >
-            Jugar
+            JUGAR
           </Link>
         </div>
       </div>
