@@ -7,6 +7,11 @@
   text-transform: uppercase;
 }
 
+/* Chamfered top-left / bottom-right corners (arcade button silhouette). */
+@utility clip-notch {
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+
 @layer components {
   /* Page backdrop: perspective floor grid + scanlines. Pair with .arcade-noise. */
   .arcade-bg {
