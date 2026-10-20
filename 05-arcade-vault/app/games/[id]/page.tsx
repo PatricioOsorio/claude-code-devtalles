@@ -96,7 +96,7 @@ export default async function GameDetailPage({
               ▶ JUGAR AHORA
             </Link>
             <Link
-              href="/"
+              href="/games"
               className={buttonVariants({ tone: "ghost", size: "lg" })}
             >
               VOLVER AL VAULT

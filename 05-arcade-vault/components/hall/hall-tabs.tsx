@@ -151,7 +151,7 @@ export function HallTabs({ games, className }: IHallTabsProps) {
 
       <div className="mt-4 text-center">
         <Link
-          href="/"
+          href="/games"
           className={buttonVariants({ tone: "cyan", size: "lg" })}
         >
           VOLVER A LA BIBLIOTECA

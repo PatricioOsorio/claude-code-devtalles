@@ -19,11 +19,11 @@ export function AuthCard({ className }: IAuthCardProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/");
+    router.push("/games");
   };
 
   const handleGuest = () => {
-    router.push("/");
+    router.push("/games");
   };
 
   return (

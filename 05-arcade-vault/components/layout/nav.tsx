@@ -14,11 +14,11 @@ export function Nav({ className }: INavProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
+  const isInicioActive = pathname === "/";
   const isBibliotecaActive =
-    pathname === "/" ||
-    pathname.startsWith("/games") ||
-    pathname.startsWith("/play");
+    pathname.startsWith("/games") || pathname.startsWith("/play");
   const isSalonActive = pathname.startsWith("/hall-of-fame");
+  const isAboutActive = pathname.startsWith("/about");
   const isAuthActive = pathname.startsWith("/auth");
 
   return (
@@ -41,6 +41,17 @@ export function Nav({ className }: INavProps) {
             href="/"
             className={cn(
               "relative px-3.5 py-2.5 pixel text-[9px] tracking-[0.16em] transition-colors",
+              isInicioActive
+                ? "neon-cyan after:absolute after:bottom-1 after:left-3.5 after:right-3.5 after:h-0.5 after:bg-cyan after:shadow-[0_0_8px_var(--color-cyan),0_0_16px_var(--color-cyan)]"
+                : "text-ink-dim hover:text-ink",
+            )}
+          >
+            Inicio
+          </Link>
+          <Link
+            href="/games"
+            className={cn(
+              "relative px-3.5 py-2.5 pixel text-[9px] tracking-[0.16em] transition-colors",
               isBibliotecaActive
                 ? "neon-cyan after:absolute after:bottom-1 after:left-3.5 after:right-3.5 after:h-0.5 after:bg-cyan after:shadow-[0_0_8px_var(--color-cyan),0_0_16px_var(--color-cyan)]"
                 : "text-ink-dim hover:text-ink",
@@ -58,6 +69,17 @@ export function Nav({ className }: INavProps) {
             )}
           >
             Salón de la Fama
+          </Link>
+          <Link
+            href="/about"
+            className={cn(
+              "relative px-3.5 py-2.5 pixel text-[9px] tracking-[0.16em] transition-colors",
+              isAboutActive
+                ? "neon-cyan after:absolute after:bottom-1 after:left-3.5 after:right-3.5 after:h-0.5 after:bg-cyan after:shadow-[0_0_8px_var(--color-cyan),0_0_16px_var(--color-cyan)]"
+                : "text-ink-dim hover:text-ink",
+            )}
+          >
+            Acerca de
           </Link>
         </div>
 
@@ -125,6 +147,16 @@ export function Nav({ className }: INavProps) {
           onClick={() => setOpen(false)}
           className={cn(
             "border-b border-dashed border-line-2 p-3.5 pixel text-[11px] transition-colors",
+            isInicioActive ? "neon-cyan" : "text-ink-dim hover:text-ink",
+          )}
+        >
+          Inicio
+        </Link>
+        <Link
+          href="/games"
+          onClick={() => setOpen(false)}
+          className={cn(
+            "border-b border-dashed border-line-2 p-3.5 pixel text-[11px] transition-colors",
             isBibliotecaActive ? "neon-cyan" : "text-ink-dim hover:text-ink",
           )}
         >
@@ -139,6 +171,16 @@ export function Nav({ className }: INavProps) {
           )}
         >
           Salón de la Fama
+        </Link>
+        <Link
+          href="/about"
+          onClick={() => setOpen(false)}
+          className={cn(
+            "border-b border-dashed border-line-2 p-3.5 pixel text-[11px] transition-colors",
+            isAboutActive ? "neon-cyan" : "text-ink-dim hover:text-ink",
+          )}
+        >
+          Acerca de
         </Link>
         <Link
           href="/auth"
