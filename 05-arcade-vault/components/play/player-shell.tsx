@@ -164,7 +164,7 @@ export function PlayerShell({ game, className }: IPlayerShellProps) {
                 JUGAR DE NUEVO
               </button>
               <Link
-                href="/"
+                href="/games"
                 className={buttonVariants({ tone: "magenta", size: "md" })}
               >
                 VOLVER AL VAULT

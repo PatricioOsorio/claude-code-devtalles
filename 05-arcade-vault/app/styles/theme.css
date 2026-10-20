@@ -48,6 +48,8 @@
   --animate-rise: rise 360ms ease-out forwards;
   --animate-fade-in: fade-in 240ms ease-out;
   --animate-slide-in: slide-in 260ms ease-out;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-bounce-subtle: bounce-subtle 1.6s ease-in-out infinite;
 
   @keyframes gridscroll {
     to { background-position: 0 60px, 0 60px; }
@@ -92,6 +94,13 @@
   @keyframes slide-in {
     from { opacity: 0; transform: translateX(12px); }
     to { opacity: 1; transform: none; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-14px) rotate(2deg); }
+  }
+  @keyframes bounce-subtle {
+    50% { transform: translateY(6px); }
   }
 }
 

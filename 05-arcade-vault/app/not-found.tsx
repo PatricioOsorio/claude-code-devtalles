@@ -15,7 +15,7 @@ export default function NotFound() {
         El juego o ruta que buscas no está disponible en el salón.
       </p>
       <Link
-        href="/"
+        href="/games"
         className={cn(buttonVariants({ tone: "cyan", size: "lg" }), "mt-8")}
       >
         VOLVER AL VAULT

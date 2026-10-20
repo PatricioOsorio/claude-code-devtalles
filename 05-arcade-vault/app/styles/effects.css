@@ -54,6 +54,50 @@
   filter: drop-shadow(0 0 14px color-mix(in oklab, var(--color-yellow) 40%, transparent));
 }
 
+@utility home-title {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: clamp(32px, 7vw, 88px);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@utility home-title-line-1 {
+  color: #ffffff;
+  text-shadow: 0 0 14px color-mix(in oklab, #ffffff 40%, transparent);
+}
+
+@utility home-title-line-2 {
+  background: linear-gradient(180deg, var(--color-cyan), #4dd0e1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 14px color-mix(in oklab, var(--color-cyan) 45%, transparent));
+}
+
+@utility home-title-line-3 {
+  background: linear-gradient(180deg, var(--color-magenta), #ff6b9e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 14px color-mix(in oklab, var(--color-magenta) 45%, transparent));
+}
+
+@utility final-title {
+  margin: 0 0 2.25rem;
+  font-family: var(--font-pixel);
+  font-size: clamp(22px, 4vw, 40px);
+  letter-spacing: 0.08em;
+  background: linear-gradient(180deg, #ffffff, var(--color-yellow));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 12px color-mix(in oklab, var(--color-yellow) 40%, transparent));
+}
+
 @layer components {
   .logo-mark {
     width: 28px;
@@ -233,5 +277,16 @@
     background: var(--color-yellow);
     box-shadow: 0 0 8px var(--color-yellow);
     animation: var(--animate-drift);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 600ms ease, transform 600ms ease;
+  }
+
+  .reveal.in {
+    opacity: 1;
+    transform: none;
   }
 }
